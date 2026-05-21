@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://djvmdd3eyetoh"]
+
+[ext_resource type="Script" path="res://scenes/player.gd" id="1_f3qe1"]
+[ext_resource type="PackedScene" uid="uid://do2507pe3iy2l" path="res://assets/models/hamster_3.glb" id="2_e8o2t"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_wjsy7"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_mhf8p"]
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_f3qe1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_wjsy7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("CapsuleMesh_mhf8p")
+
+[node name="CameraPivot" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 0.573576, 0.819152, 0, -0.819152, 0.573576, 0, 10, 8.5)
+fov = 58.0
+
+[node name="VisualPivot" type="Node3D" parent="."]
+
+[node name="HamsterModel" parent="VisualPivot" instance=ExtResource("2_e8o2t")]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, -0.0318633, -0.250059, -0.856261)
+
+[node name="Muzzle" type="Node3D" parent="VisualPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0132324, -0.218204, 0.505681)
