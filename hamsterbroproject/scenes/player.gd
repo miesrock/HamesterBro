@@ -1,15 +1,22 @@
 extends CharacterBody3D
 
 @export var move_speed: float = 4.0
+@export var jump_velocity: float = 7.0
+@export var gravity: float = 22.0
 @export var visual_pivot_path: NodePath = ^"VisualPivot"
 @export var visual_model_path: NodePath = ^"VisualPivot/HamsterModel"
 @export var visual_yaw_offset_degrees: float = 180.0
 
+var experience: int = 0
 var _visual_pivot: Node3D
 var _visual_model: Node3D
+var _ground_y: float = 0.0
 
 
 func _ready() -> void:
+	add_to_group("player")
+	_ground_y = global_position.y
+
 	var placeholder := get_node_or_null("MeshInstance3D") as MeshInstance3D
 	if placeholder != null:
 		placeholder.visible = false
@@ -46,9 +53,19 @@ func _physics_process(delta: float) -> void:
 
 	velocity.x = input_dir.x * move_speed
 	velocity.z = input_dir.z * move_speed
-	velocity.y = 0
+
+	if _is_grounded():
+		if Input.is_action_just_pressed("jump"):
+			velocity.y = jump_velocity
+		elif velocity.y < 0.0:
+			velocity.y = 0.0
+	else:
+		velocity.y -= gravity * delta
 
 	move_and_slide()
+	if global_position.y < _ground_y:
+		global_position.y = _ground_y
+		velocity.y = 0.0
 
 	if input_dir.length_squared() > 0.0:
 		_face_move_direction(input_dir)
@@ -61,3 +78,11 @@ func _face_move_direction(input_dir: Vector3) -> void:
 	_visual_pivot.look_at(_visual_pivot.global_position + input_dir, Vector3.UP)
 	if not is_zero_approx(visual_yaw_offset_degrees):
 		_visual_pivot.rotate_y(deg_to_rad(visual_yaw_offset_degrees))
+
+
+func add_experience(value: int) -> void:
+	experience += value
+
+
+func _is_grounded() -> bool:
+	return global_position.y <= _ground_y + 0.01 and velocity.y <= 0.0

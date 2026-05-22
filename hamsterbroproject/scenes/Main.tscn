@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://bjs0wbkco8rg5"]
+[gd_scene load_steps=7 format=3 uid="uid://bjs0wbkco8rg5"]
 
 [ext_resource type="PackedScene" uid="uid://djvmdd3eyetoh" path="res://scenes/Player.tscn" id="1_l1umw"]
 [ext_resource type="PackedScene" uid="uid://biieosvel3bsj" path="res://scenes/test_environment.tscn" id="2_yq6wc"]
 [ext_resource type="Script" path="res://scripts/enemy_spawner.gd" id="3_vrni2"]
 [ext_resource type="Script" path="res://scripts/combat_director.gd" id="4_aq5hd"]
 [ext_resource type="Script" path="res://scripts/debug_ui.gd" id="5_ax11p"]
+[ext_resource type="Script" path="res://scripts/juicy_audio.gd" id="6_2x4kh"]
 
 [node name="Main" type="Node3D"]
 
@@ -20,10 +21,14 @@ player_path = NodePath("../Player")
 [node name="CombatDirector" type="Node3D" parent="."]
 script = ExtResource("4_aq5hd")
 player_path = NodePath("../Player")
+audio_path = NodePath("../JuicyAudio")
 
 [node name="DebugUI" type="CanvasLayer" parent="."]
 script = ExtResource("5_ax11p")
 enemy_spawner_path = NodePath("../EnemySpawner")
+
+[node name="JuicyAudio" type="Node" parent="."]
+script = ExtResource("6_2x4kh")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.993252, 0.115977, 0, -0.0632965, -0.542083, 0.837938, 0.0971819, 0.832283, 0.545766, 0, 16.1631, 0)

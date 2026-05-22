@@ -3,16 +3,20 @@ class_name CombatDirector
 
 const BulletSceneScript := preload("res://scripts/bullet.gd")
 const DamageTextSceneScript := preload("res://scripts/damage_text.gd")
+const ExperienceOrbScript := preload("res://scripts/experience_orb.gd")
 
 @export var player_path: NodePath
 @export var muzzle_path: NodePath
+@export var audio_path: NodePath
 @export var fire_interval: float = 0.14
 @export var burst_count: int = 3
 @export var spread_degrees: float = 10.0
 @export var damage_text_interval: float = 0.08
+@export var experience_drop_chance: float = 1.0
 
 var _player: Node3D
 var _muzzle: Node3D
+var _audio: Node
 var _fire_timer: float = 0.0
 var _damage_text_timer: float = 0.0
 var _color_index: int = 0
@@ -48,6 +52,12 @@ func _ready() -> void:
 
 	if _muzzle == null:
 		_muzzle = _player.get_node_or_null("VisualPivot/Muzzle") as Node3D
+
+	if not audio_path.is_empty:
+		_audio = get_node_or_null(audio_path)
+
+	if _audio == null:
+		_audio = get_node_or_null("../JuicyAudio")
 
 
 func _physics_process(delta: float) -> void:
@@ -92,6 +102,7 @@ func _fire_burst(target: Node3D) -> void:
 
 	var start_position: Vector3 = _get_muzzle_position(base_direction)
 	var half_spread: float = spread_degrees * 0.5
+	_play_audio("play_shoot")
 	for index: int in burst_count:
 		var t: float = 0.5
 		if burst_count > 1:
@@ -115,8 +126,11 @@ func _get_muzzle_position(base_direction: Vector3) -> Vector3:
 
 
 func _on_bullet_enemy_hit(_enemy: Node3D, hit_position: Vector3) -> void:
+	_spawn_experience_orb(hit_position)
+
 	if _damage_text_timer > 0.0:
 		_spawn_hit_spark(hit_position)
+		_play_audio("play_hit")
 		return
 
 	_damage_text_timer = damage_text_interval
@@ -127,6 +141,9 @@ func _on_bullet_enemy_hit(_enemy: Node3D, hit_position: Vector3) -> void:
 		color = Color(0.98, 0.98, 0.92, 1.0)
 	elif word == "CRIT-HAM!":
 		color = Color(1.0, 0.34, 0.18, 1.0)
+		_play_audio("play_crit")
+	else:
+		_play_audio("play_hit")
 	add_child(text)
 	text.configure(word, hit_position + Vector3(0.0, 0.95, 0.0), color)
 
@@ -155,3 +172,17 @@ func _spawn_hit_spark(hit_position: Vector3) -> void:
 		tween.tween_property(spark, "position", spark.position + Vector3(_rng.randf_range(-0.55, 0.55), _rng.randf_range(0.15, 0.75), _rng.randf_range(-0.55, 0.55)), 0.16)
 		tween.parallel().tween_property(spark, "scale", Vector3.ZERO, 0.16)
 		tween.tween_callback(spark.queue_free)
+
+
+func _spawn_experience_orb(hit_position: Vector3) -> void:
+	if _rng.randf() > experience_drop_chance:
+		return
+
+	var orb := ExperienceOrbScript.new()
+	add_child(orb)
+	orb.global_position = hit_position + Vector3(0.0, 0.35, 0.0)
+
+
+func _play_audio(method_name: StringName) -> void:
+	if _audio != null and _audio.has_method(method_name):
+		_audio.call(method_name)
