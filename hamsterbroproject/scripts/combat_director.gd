@@ -186,3 +186,17 @@ func _spawn_experience_orb(hit_position: Vector3) -> void:
 func _play_audio(method_name: StringName) -> void:
 	if _audio != null and _audio.has_method(method_name):
 		_audio.call(method_name)
+
+
+func increase_burst_count(amount: int) -> void:
+	if amount <= 0:
+		return
+
+	burst_count += amount
+
+
+func multiply_fire_interval(multiplier: float, minimum: float) -> void:
+	if multiplier <= 0.0:
+		return
+
+	fire_interval = max(minimum, fire_interval * multiplier)

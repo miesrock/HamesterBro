@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="PackedScene" uid="uid://djvmdd3eyetoh" path="res://scenes/Player.tscn" id="1_player"]
 [ext_resource type="PackedScene" uid="uid://biieosvel3bsj" path="res://scenes/test_environment.tscn" id="2_env"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://scripts/debug_ui.gd" id="5_debug"]
 [ext_resource type="Script" path="res://scripts/juicy_audio.gd" id="6_audio"]
 [ext_resource type="Script" path="res://scripts/test_arena_controls.gd" id="7_controls"]
+[ext_resource type="Script" path="res://scripts/upgrade_director.gd" id="8_upgrade"]
 
 [node name="TestArena" type="Node3D"]
 
@@ -27,6 +28,13 @@ audio_path = NodePath("../JuicyAudio")
 [node name="DebugUI" type="CanvasLayer" parent="."]
 script = ExtResource("5_debug")
 enemy_spawner_path = NodePath("../EnemySpawner")
+player_path = NodePath("../Player")
+
+[node name="UpgradeDirector" type="Node" parent="."]
+script = ExtResource("8_upgrade")
+player_path = NodePath("../Player")
+combat_director_path = NodePath("../CombatDirector")
+ui_path = NodePath("../DebugUI")
 
 [node name="TestArenaControls" type="CanvasLayer" parent="."]
 script = ExtResource("7_controls")

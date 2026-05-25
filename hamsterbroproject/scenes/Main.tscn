@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bjs0wbkco8rg5"]
+[gd_scene load_steps=8 format=3 uid="uid://bjs0wbkco8rg5"]
 
 [ext_resource type="PackedScene" uid="uid://djvmdd3eyetoh" path="res://scenes/Player.tscn" id="1_l1umw"]
 [ext_resource type="PackedScene" uid="uid://biieosvel3bsj" path="res://scenes/test_environment.tscn" id="2_yq6wc"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scripts/combat_director.gd" id="4_aq5hd"]
 [ext_resource type="Script" path="res://scripts/debug_ui.gd" id="5_ax11p"]
 [ext_resource type="Script" path="res://scripts/juicy_audio.gd" id="6_2x4kh"]
+[ext_resource type="Script" path="res://scripts/upgrade_director.gd" id="7_f4n0x"]
 
 [node name="Main" type="Node3D"]
 
@@ -26,6 +27,13 @@ audio_path = NodePath("../JuicyAudio")
 [node name="DebugUI" type="CanvasLayer" parent="."]
 script = ExtResource("5_ax11p")
 enemy_spawner_path = NodePath("../EnemySpawner")
+player_path = NodePath("../Player")
+
+[node name="UpgradeDirector" type="Node" parent="."]
+script = ExtResource("7_f4n0x")
+player_path = NodePath("../Player")
+combat_director_path = NodePath("../CombatDirector")
+ui_path = NodePath("../DebugUI")
 
 [node name="JuicyAudio" type="Node" parent="."]
 script = ExtResource("6_2x4kh")
